@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+
+import {CardList} from './components/card-list/card-list.component.jsx';
 
 class App extends Component {
   constructor(){
@@ -8,38 +9,24 @@ class App extends Component {
 
     this.state = {
       string: 'Hello Tin',
-      monsters: [
-        {
-          name:'Frankenstein',
-        },
-        {
-          name:'Drakula',
-        },
-        {
-          name:'Zombie',
-        },
-      ]
+      monsters: [],
+      searchField: '',
     };
   }
+
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(json => this.setState({monsters:json}))
+  }
+
+
   render() {
+    console.log()
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> SDAdas 
-          </p>
-            <p>{this.state.string}</p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <button onClick={()=> this.setState({string:"Bravo"})}>Click me</button>
-        </header>
+        <input type='search' onChange={e => this.setState({searchField:e.target.value},()=>console.log(this.state))} placeholder='search monsters'/>
+        <CardList monsters={this.state.monsters.filter(e => e.name.includes( this.state.searchField))}></CardList>
       </div>
     );
   }
